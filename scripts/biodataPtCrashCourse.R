@@ -69,6 +69,7 @@ tax2biom <- function(taxTable) {
   id = c()
   fullTax = c()
   
+  
   for (irow in 1:lenNrow) {
     rowID = as.character(rownames(taxTable)[irow])
     id = append(id, rowID)
@@ -76,15 +77,15 @@ tax2biom <- function(taxTable) {
     
     for (icol in 1:lenNcol) {
       colName <- colnames(taxTable)[icol]
-      #colSign <- paste0(tolower(strtrim(colName,1)), "__")
+      colSign <- paste0(tolower(strtrim(colName,1)), "__")
       
       if (tax == "") {
-        #tax <- paste0(colSign, taxTable[irow,icol])
-        tax <- taxTable[irow,icol]
+        tax <- paste0(colSign, taxTable[irow,icol])
+        #tax <- taxTable[irow,icol]
       }
       else {
-        #tax <- paste(tax, paste0(colSign, taxTable[irow,icol]), sep = "; ")
-        tax <- paste(tax, taxTable[irow,icol], sep = "; ")
+        tax <- paste(tax, paste0(colSign, taxTable[irow,icol]), sep = "; ")
+        #tax <- paste(tax, taxTable[irow,icol], sep = "; ")
       }
     }
     fullTax <- append(fullTax, tax)

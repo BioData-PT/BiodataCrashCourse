@@ -112,7 +112,7 @@ If <b>text</b> appear in bold is a note with auxiliary information that may be u
 
 <br>
 
-><p><font>The <i>16S rRNA gene amplion - upstream data analysis</i> from <b>Biome-shiny Biodata.pt Crash Course</b> requires the participants to be familiar with the <b>R programming language and environment</b>.</p><font> 
+><p><font>The <i>16S rRNA gene amplicon - upstream data analysis</i> from <b>Biome-shiny Biodata.pt Crash Course</b> requires the participants to be familiar with the <b>R programming language and environment</b>.</p><font> 
 
 <details><summary><b>R markdown</b></summary><p>
 This document that you open in <b>Rstudio</b> is a <i>R markdown</i> document (with the file extension <i>.Rmd</i>). A <a href ="https://rmarkdown.rstudio.com"><i>markdown</i></a> document is a plain text file with some special syntax that can be easily compiled into a <i>html</i> file. The <i>R markdown</i> is a <i>markdown</i> document with <i>R language</i> embedded. Therefore, <i>R markdown</i> is a very useful resource to write reports since you can combine the text, R programming language and output, <i>e.g.</i>, tables, plots and <i>e.t.c.</i>, into one single document. 
@@ -1123,7 +1123,7 @@ write.table(x = asvTblNoChim2, file = "./output/asvTblNoChim.txt", sep = "\t", r
 <br>
 
 In order to use the **Biome-Shiny** R app latter we need to create a **biom** file that contains the distribution of ASVs, *i.e.*, the abundance, across samples with taxonomy altogether. In order to convert the **ASV + Taxonomy table** into a **biom** file format latter, the taxonomy needs to follow some standards. To this purpose it was created a built-in function `tax2biom()` in the `biodataPtCrashCourse.R` R script that performs the following taxonomy formatting:
-aggregates all taxonomic levels separated by '; ' with the prefix "R__" (with R being substituted by the taxonomic rank at which belong, like Phylum, *e.g.*, "P__", Class, "C__", and so on). It will return a data frame with 2 columns: "ID" (gene/ASV) and "taxonomy" (full taxonomy path as it appears in QIIME). 
+aggregates all taxonomic levels separated by '; ' with the prefix "R__" (with R being substituted by the taxonomic rank at which belong, like Phylum, *e.g.*, "p__", Class, "c__", and so on). It will return a data frame with 2 columns: "ASV_ID" (gene/ASV) and "taxonomy" (full taxonomy path as it appears in Greengenes database - convenient to convert to biom format and import to Biome-Shiny app). 
 
 Run the following R chunk code to get the ASV table merged with the new formatted taxonomy, saving it inside the `output` folder with the name `asvTaxTbl.txt` (tab-delimited format). The file `asvTaxTbl.txt` will be converted latter into **biom format** in order to use it with **Biome-Shiny**.
 
