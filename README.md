@@ -28,4 +28,17 @@ Content of this repo:
    
    + **bibliography.bib**: bibliography used to add references to R markdown document in BibTex format;
    
-   + **practical.Rmd**: *R markdown* document in the main R code run during the first part of the course for the participants reproduce the course.
+   + **practical.Rmd**: *R markdown* document with the main R code run during the first part of the course for the participants reproduce the course.
+
+
+   
+<br>
+<br>
+<br>
+
+### Acknowledgements
+
+<center><figure>
+  <img src="figs/biodata_elixir.png" alt="dada2" width="200" class="center">
+  <img src="figs/logoIGC2014.png" alt="dada2" width="300" class="center">
+</figure></center>

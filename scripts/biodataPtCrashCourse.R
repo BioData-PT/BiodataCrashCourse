@@ -152,7 +152,21 @@ countMergedSeqsFromDadaObjcList <- function(mergedObj) {
   
 }
 
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+
+convertTab2Biom <- function(inFile, outFile) {
   
+  if (system("command -v biom", ignore.stdout = TRUE, ignore.stderr = TRUE) !=0)  {
+
+    stop("biom program is not installed or it is not accessible!\n  Exiting...")
+    
+  }
+  
+  system(paste("biom convert", "-i", inFile, "-o", outFile, "--to-hdf5", 
+               '--table-type="OTU table"', "--process-obs-metadata taxonomy"))
+  
+}
   
   
 

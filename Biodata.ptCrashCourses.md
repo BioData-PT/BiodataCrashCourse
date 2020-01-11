@@ -1,21 +1,19 @@
-# Biome-Shiny Biodata.pt Crash Course
+---
+title: "16S rRNA gene amplicon - upstream data analysis" 
+author: 
+     name: "António Sousa"
+     email: "agsousa@igc.gulbenkian.pt"
+     affiliation: "Bioinformatics Unit - IGC"
+date: "31 January 2020"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
+---
 
 <br>
 
-## 16S rRNA gene amplicon - upstream data analysis
-
-<br>
-
-
-Trainer: António Sousa ([Bioinformatics Unit - IGC](http://www.igc.gulbenkian.pt/)) 
-
-Contact: agsousa@igc.gulbenkian.pt 
-
-Day: 31 January 2020
-
-Place: [IGC](http://www.igc.gulbenkian.pt), Oeiras, Portugal
-
-<br>
 
 ### Introduction
 
@@ -71,56 +69,71 @@ Despite these differences between <i>denoising-</i> <i>vs</i> <i>clustering-</i>
 
 ### Before getting started 
 
-This tutorial is a replication of the [**original DADA2 tutorial**](https://benjjneb.github.io/dada2/tutorial.html) using the same subset of 16S rRNA gene amplicon data from fecal mouse samples published by the [Schloss lab](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3753973/pdf/zam5112.pdf) (Kozich et al. 2013). This dataset was chosen because it was also used in the [mothur MiSeq SOP](https://www.mothur.org/wiki/MiSeq_SOP) that runs an OTU-clustering based pipeline, and, thus it allows us to compare our results (although we do not have the time to do it during this short introduction course, but you can do it). This subset includes fecal mouse samples collected daily from the next 150 days post-weaning (early - 0-9 days - and late - 141-150 days). So, one of the questions that you can try to answer is: **How the stability of the mouse gut microbiome changed with the rapid change in mouse weight observed during early days to the late days after weaning?** 
+><p><font>The <i>16S rRNA gene amplicon - upstream data analysis</i> from <b>Biome-shiny Biodata.pt Crash Course</b> requires the participants to be familiar with the <b>R programming language and environment</b>.</p><font> 
+
+<br>
+
+This tutorial is a replication of the [**original DADA2 tutorial**](https://benjjneb.github.io/dada2/tutorial.html) made by [Benjamin Callahan](https://callahanlab.cvm.ncsu.edu/) using, as the name suggests, the [dada2](https://benjjneb.github.io/dada2/index.html) pipeline and R package developed by Benjamin Callahan and colleagues (Callahan et al. 2016) using the same subset of 16S rRNA gene amplicon data from fecal mouse samples published by the [Schloss lab](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3753973/pdf/zam5112.pdf) (Kozich et al. 2013). This dataset was chosen because it was also used in the [mothur MiSeq SOP](https://www.mothur.org/wiki/MiSeq_SOP) that runs an OTU-clustering based pipeline, and, thus it allows us to compare our results (although we do not have the time to do it during this short introduction course, but you can do it). This subset includes fecal mouse samples collected daily from the next 150 days post-weaning (early - 0-9 days - and late - 141-150 days). So, one of the questions that you can try to answer is: **How the composition of the mouse gut microbiome changed during the early days to the late days after weaning?** 
+
+The **16S rRNA gene amplicon - upstream data analysis** course assumes that you will start with paired-end V4 16S rRNA Illumina fastq files already: 
+
+   + demultiplexed (most of the sequencing companies deliver fastq files demultiplexed; however, if you need to demultiplex your samples you can download, install and use [sabre](https://github.com/najoshi/sabre));
+    
+   + without primers/adapters (in the future you may need to remove primers/adapters from your samples, if so, you can download, install and use [cutadapt](https://cutadapt.readthedocs.io/en/stable/) (Martin 2011));
+    
+   + with the sequences of forward and reverse fastq files matching, *i.e.*, the first sequence of one forward sample should belong to the same *lane*, *tile*, and *cluster (x, y coordinates)* that the first sequence of the respective reverse sample and so on (this could not be the case if you filter your forward and reverse fastq files independently, if so, follow the recommendations made in the **dada2 FAQ** [What if my forward and reverse reads aren’t in matching order?](https://benjjneb.github.io/dada2/faq.html)). 
+   
+<br>
+
+#### Requirements: 
+
+><p><font size=2>Warning: all the requirements needed to follow the first part of the course were already satisfied for you for convenience, although you may need to go through these if you are trying to set up this in your own computer</p></font>  
+
+   + Download 16S rRNA gene amplicon NGS data and metadata (Kozich et al. 2013):
+   
+      + [16S rRNA gene amplicon fastq and metadata files](http://www.mothur.org/w/images/d/d6/MiSeqSOPData.zip)
+   
+   <br>
+   
+   + Download the Silva reference database (Quast et al. 2012) into a folder named `database`: 
+      
+      + [silva_nr_v132_train_set.fa.gz](https://zenodo.org/record/1172783/files/silva_nr_v132_train_set.fa.gz?download=1): to assign taxonomy until genus based on naive Bayes classifier
+      + [silva_species_assignment_v132.fa.gz](https://zenodo.org/record/1172783/files/silva_species_assignment_v132.fa.gz?download=1): to assign taxonomy until species level based on 100% match
+      
+   <br>
+   
+   + Download and install [R version 3.6.2](https://www.r-project.org) and [Rstudio](https://rstudio.com) (R Core Team 2019)
+   
+   + Download and install [dada2 v.1.14.0](https://benjjneb.github.io/dada2/index.html) R package and dependencies (Callahan et al. 2016)
+   
+   + Download and install [biom v.2.1.7](http://biom-format.org) command-line python program (Mcdonald et al. 2012)
+   
+   + Download and install [**Biome-Shiny**: *A Shiny R app for microbiome visualization*](https://github.com/BioData-PT/Biome-Shiny) R shiny app - developed by Henrique Costa from Biodata.pt/IGC 
 
 
 <br>
 
-#### How to read this notebook?
+#### How to read this document?
 
 >Text: tips and important messages appear indented like this.
 
-<details><summary><b>Text</b> (click!)</summary><p>
+<details><summary><b>Concept</b> (click!)</summary><p>
 If <b>text</b> appear in bold is a note with auxiliary information that may be useful. Usually it contains bioinformatic terms, exaplanations and information about R code and syntax. 
 </p></details>
 
 <br>
 
-<details><summary><i>Text</i> (click!)</summary><p>
+<details><summary><i>Answer</i> (click!)</summary><p>
 <i>Answers</i> to <i>questions</i> appeared in italic. 
 </p></details>
 
 <br>
-
-#### Requirements: 
-
-   + [Download the 16S rRNA gene amplicon data](http://www.mothur.org/w/images/d/d6/MiSeqSOPData.zip) (this was already downloaded for you for convenience)
-   
-   + Download the Silva reference database: 
-      
-      + [silva_nr_v132_train_set.fa.gz](https://zenodo.org/record/1172783/files/silva_nr_v132_train_set.fa.gz?download=1): to assign taxonomy until genus based on naive Bayes classifier (this was already downloaded for you for convenience)
-      + [silva_species_assignment_v132.fa.gz](https://zenodo.org/record/1172783/files/silva_species_assignment_v132.fa.gz?download=1): to assign taxonomy until species level based on 100% match (this was already downloaded for you for convenience)
-      
-   
-   + [R version 3.6.2](https://www.r-project.org) and [Rstudio](https://rstudio.com) 
-   
-   + [dada2 v.1.14.0](https://benjjneb.github.io/dada2/index.html) R package and dependencies
-   
-   + [biom v.2.1.7](http://biom-format.org) command-line python program
-   
-   + [**Biome-Shiny**: *A Shiny R app for microbiome visualization*](https://github.com/BioData-PT/Biome-Shiny) R shiny app 
-
-<br>
-
-><p><font>The <i>16S rRNA gene amplicon - upstream data analysis</i> from <b>Biome-shiny Biodata.pt Crash Course</b> requires the participants to be familiar with the <b>R programming language and environment</b>.</p><font> 
 
 <details><summary><b>R markdown</b></summary><p>
 This document that you open in <b>Rstudio</b> is a <i>R markdown</i> document (with the file extension <i>.Rmd</i>). A <a href ="https://rmarkdown.rstudio.com"><i>markdown</i></a> document is a plain text file with some special syntax that can be easily compiled into a <i>html</i> file. The <i>R markdown</i> is a <i>markdown</i> document with <i>R language</i> embedded. Therefore, <i>R markdown</i> is a very useful resource to write reports since you can combine the text, R programming language and output, <i>e.g.</i>, tables, plots and <i>e.t.c.</i>, into one single document. 
 </p></details>
   
 <br>
-
-
 <br>
 
 
@@ -374,7 +387,7 @@ plotQualityProfile(fl = fastqRevPath) # plot the fastq profiles for the reverse 
 
 <br>
 
-*Question*: **Which kind of information you can find in the plots that you made?**
+*Question*: **Which kind of information can you find in the plots that you made?**
 
 <details><summary><i>Answer</i></summary><p>
 The frequency, median and quartiles of Q score <i>per</i> base (gray area, green and orange lines), the average read-length and number of reads per each fastq (forward or reverse) sample. 
@@ -631,7 +644,7 @@ barplot(derepMtxAbund, main = "Unique/dereplicated sequences (absolute abundance
 
 <br>
 
-*Question*: **There is any difference between the absolute number and relative/percentage number of unique sequence across samples regarding the increasing/decreasing pattern?**
+*Question*: **Regarding the number of unique sequences that you obtained for each sample, can you compare the no. of unique sequences between samples using absolute abundance?**
 
 ><p><font size=2>Tip: try to reuse some of the R code that we use before such as the R objects: <code>uniqDerepFwd</code>, <code>totalDerep</code>, <code>uniqDerepRev</code> (this will be useful to calculate the percentage).</font></p>
 
@@ -654,7 +667,7 @@ barplot(derepMtxPerc, main = "Unique/dereplicated sequences (%)", xlab = "Sample
 
 <img src="figs/plot unique sequences - percentage - solution-1.png" style="display: block; margin: auto;" />
 
-Yes. After you run the code above, you can realize that the different number of unique sequences across samples is dependent on *library size*, *i.e.*, the sequencing coverage or the total number of reads *per* sample. In average there was a reduction in the number of sequences of 73.1040136% for forward fastq files and 75.5445447% for the reverse fastq files.  
+Yes. After you run the code above, you can realize that the different number of unique sequences across samples is dependent on *library size*, *i.e.*, the sequencing coverage or the total number of reads *per* sample. On average there was a reduction in the number of sequences of 73.1040136% for forward fastq files and 75.5445447% for the reverse fastq files.  
 </p></details>
 
 <br>
@@ -762,7 +775,7 @@ barplot(denoisedMtx[4:5,], main = "Comparison of the no. of denoised sequences: 
 
 <img src="figs/plot denoised sequences - solution-2.png" style="display: block; margin: auto;" />
 
-In average there are 110.9 and 98.15 denoised sequences in the forward and reverse sample files. The mock sample has 21 (forward) and 19 (reverse) denoised sequences, that is pretty much the number of strains in this sample: 20.
+On average there are 110.9 and 98.15 denoised sequences in the forward and reverse sample files. The mock sample has 21 (forward) and 19 (reverse) denoised sequences, that is pretty much the number of strains in this sample: 20.
 
 </p></details>
 
@@ -1008,7 +1021,7 @@ knitr::kable(summaryTblSeq)
 
 <details><summary><i>Answer</i></summary><p>
 
-The number of sequences that remained through the whole pipeline was in average: 81.4552543% (83.7674836, 85.4830465, 81.6213494, 79.2020107, 79.2322215, 72.260203, 78.8938593, 77.2555268, 76.19215, 80.0886739, 81.4262784, 76.9649664, 85.8053007, 81.2518497, 83.5431655, 83.6024534, 82.2187561, 85.8896864, 85.0777935, 89.3283114).
+The number of sequences that remained through the whole pipeline was on average: 81.4552543% (83.7674836, 85.4830465, 81.6213494, 79.2020107, 79.2322215, 72.260203, 78.8938593, 77.2555268, 76.19215, 80.0886739, 81.4262784, 76.9649664, 85.8053007, 81.2518497, 83.5431655, 83.6024534, 82.2187561, 85.8896864, 85.0777935, 89.3283114).
 </p></details>
 
 <br>
@@ -1037,7 +1050,7 @@ Now, we will do the same as before but this time we will plot the percentage of 
 
 summaryTblSeqPerc <- apply(X = summaryTblSeq, MARGIN = 2, function(x) x / summaryTblSeq[,1] * 100) # get the correspondent percentage table
 summaryTblSeqPercTrans <- t(summaryTblSeqPerc) # transpose
-barplot(summaryTblSeqPercTrans, main = "Percenatge of sequences kept through the pipeline", ylab = "Percentage of sequences (%)", xlab = "Samples", col = c("gray", "#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"), legend = rownames(summaryTblSeqPercTrans), beside = TRUE) # plot it 
+barplot(summaryTblSeqPercTrans, main = "Percentage of sequences kept through the pipeline", ylab = "Percentage of sequences (%)", xlab = "Samples", col = c("gray", "#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"), legend = rownames(summaryTblSeqPercTrans), beside = TRUE) # plot it 
 ```
 
 <img src="figs/plot no. seqs pipeline - perc. no.-1.png" style="display: block; margin: auto;" />
@@ -1093,7 +1106,7 @@ saveRDS(object = taxTbl, file = "./output/taxTbl.rds") # save the ASV taxonomy
 
 Well, as you saw above the `rownames(taxTbl)` and `colnames(asvTblNoChim)` are the unique denoised DNA sequences of the *ASVs* found in this study. But it would be much better and easier to manipulate if we use shorter **ASV_ID** such as **ASV_nrSeq**, where the *nrSeq* is just the no. of the sequence in the table. Then, we can save the DNA sequences with this tag/id to keep track of the true unique identifiers of ASVs. 
 
-With this purpose in mind, we will run the R chunk code below. First, we will create a new taxonomic matrix table using the previous taxonomic matrix table `taxTbl` R object and adding to this a new column called `ASV` with `cbind()` (column bind) function. The new column contains the **ASV_nrSeq** labels, that will start in 1, *i.e.*, pasting `ASV` to `1` . `ASV_1` - with `paste()`, until the length of rows in `taxTbl`, *i.e.*, `nrow(taxTbl)` equal to `ASV_232`. Then, we will just set as row names of this new matrix the same  **ASV_nrSeq** labels just created before with `rownames(taxTbl2) <- taxTbl2[,8]`. Next, we will save the ASV sequences to the fasta file `asvFastaDNASequences.fasta`, inside the folder `output`, with the `dada2` `uniquesToFasta()` function, where the fasta headers/identifiers are the same as  **ASV_nrSeq** labels created before - `ids = taxTbl2[,8]` - (to keep trackability!). Finally, we will substitute also the ASV identifiers by the new  **ASV_nrSeq** labels in the ASV table - `asvTblNoChim` - as we did for the taxonomic table before: first we will copy the `asvTblNoChim` to `asvTblNoChim2`, then rename the ASV column names by the new  **ASV_nrSeq** labels with `colnames(asvTblNoChim2) <- taxTbl2[,8]`, transpose the columns into rows and vice-versa to have samples as columns (more convenient) - `asvTblNoChim2 <- t(asvTblNoChim2)` -, convert the matrix ASV table R object into a data frame - `asvTblNoChim2 <- as.data.frame(asvTblNoChim2)` -, add a new column with the new ASV labels - `asvTblNoChim2[,"ASV_ID"] <- rownames(asvTblNoChim2)` -, and remove the *mock community* (because this is a synthetic/control community that we want to remove from downstream analyses) that is the 20th column and put the 21st column - with the ASV labels - in the first column - `asvTblNoChim2 <- asvTblNoChim2[, c(21,1:19)]`. Save the taxonomic (`taxTbl.txt`) and ASV (`asvTblNoChim.txt`) tables inside the `output` folder in tab-delimited format     
+With this purpose in mind, we will run the R chunk code below. First, we will create a new taxonomic matrix table using the previous taxonomic matrix table `taxTbl` R object and adding to this a new column called `ASV` with `cbind()` (column bind) function. The new column contains the **ASV_nrSeq** labels, that will start in 1, *i.e.*, pasting `ASV` to `1` . `ASV_1` - with `paste()`, until the length of rows in `taxTbl`, *i.e.*, `nrow(taxTbl)` equal to `ASV_232`. Then, we will just set as row names of this new matrix the same  **ASV_nrSeq** labels just created before with `rownames(taxTbl2) <- taxTbl2[,8]`. Next, we will save the ASV sequences to the fasta file `asvFastaDNASequences.fasta`, inside the folder `output`, with the `dada2` `uniquesToFasta()` function, where the fasta headers/identifiers are the same as  **ASV_nrSeq** labels created before - `ids = taxTbl2[,8]` - (to keep trackability!). Finally, we will substitute also the ASV identifiers by the new  **ASV_nrSeq** labels in the ASV table - `asvTblNoChim` - as we did for the taxonomic table before: first we will copy the `asvTblNoChim` to `asvTblNoChim2`, then rename the ASV column names by the new  **ASV_nrSeq** labels with `colnames(asvTblNoChim2) <- taxTbl2[,8]`, transpose the columns into rows and vice-versa to have samples as columns (more convenient) - `asvTblNoChim2 <- t(asvTblNoChim2)` -, convert the matrix ASV table R object into a data frame - `asvTblNoChim2 <- as.data.frame(asvTblNoChim2)` -, add a new column with the new ASV labels - `asvTblNoChim2[,"ASV_ID"] <- rownames(asvTblNoChim2)` -, and remove the *mock community* (because this is a synthetic/control community that we want to remove from downstream analyses) that is the 20th column and put the 21st column - with the ASV labels - in the first column - `asvTblNoChim2 <- asvTblNoChim2[, c(21,1:19)]`. Save the taxonomic (`taxTbl.txt`) and ASV (`asvTblNoChim.txt`) tables inside the `output` folder in tab-delimited format.     
 
 
 ```r
@@ -1198,15 +1211,18 @@ In total, it was identified 20 strains in the mock community/sample. Yes, we ide
 
 ### Convert the ASV table text file into a biom (Biological Observation Matrix) file
 
-In the command-line shell (called *terminal* in Ubuntu and Mac OS Unix systems) type the following command: 
-
-`cd path/output` (comment: substitute *'path'* by the absolute file path until our working directory)
-
-Then, inside the folder `output`, we will call the program `biom` that will be used to convert the ASV table with taxonomy in text plain format into a **Biological Observation Matrix**, aka **biom**, file format [@mcdonald2012biological]. A **biom** file is a *biological observation matrix* file that can contain an OTU table or other gene feature table as well other metadata fields such as, taxonomy data, known as `observation-metadata`. To convert our *ASV table with taxonomy*, run the following command in the terminal: 
-
 ><p><font size=2>biom: you may need to install biom in your computer (this was already done for you for convenience). If you need to install <code>biom</code> program, please follow the instructions at: http://biom-format.org/</font></p>
 
-`biom convert -i asvTaxTbl.txt -o asvTable.biom --to-hdf5 --table-type="OTU table" --process-obs-metadata taxonomy`
+Finally, we will use the program `biom` to convert the ASV table with taxonomy in text plain format into a **Biological Observation Matrix**, aka **biom**, file format (Mcdonald et al. 2012). A **biom** file is a *biological observation matrix* file that can contain an OTU table or other gene feature table as well other metadata fields such as, taxonomy data, known as `observation-metadata`. Usually, the `biom` program is called from the command-line. However, for convenience we will use a built-in function `convertTab2Biom` from the R script `biodataPtCrashCourse.R` that calls the `biom` program directly from the R console. Thus, to convert the *ASV table with taxonomy*, run the following R chunk code. Give as input the file path (=`inFile`) for the *ASV table with taxonomy*, `./output/asvTaxTbl.txt`, and as output the file path for the new **biom** that will created (=`outFile`) - `./output/asvTable.biom` -, with the file extension `.biom`.  
+
+```r
+
+## Convert ASV table with taxonomy in tab-delimited format into biom format  
+
+source("./scripts/biodataPtCrashCourse.R") # import R script with built-in functions
+convertTab2Biom(inFile = "./output/asvTaxTbl.txt", outFile = "./output/asvTable.biom")
+
+```
 
 <br>
 
@@ -1296,22 +1312,32 @@ sessionInfo()
 ```
 
 <br>
-
-
-
 <br>
 <br>
+
 
 ### Disclaimer
 
-This tutorial is a replication of the [**original DADA2 tutorial**](https://benjjneb.github.io/dada2/tutorial.html) made and maintained by Dr. Benjamin Callahan using the same subset of 16S rRNA gene amplicon data from fecal mouse samples published by the [Schloss lab](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3753973/pdf/zam5112.pdf) [@kozich2013development].
+This tutorial is a replication of the [**original DADA2 tutorial**](https://benjjneb.github.io/dada2/tutorial.html) made and maintained by Dr. Benjamin Callahan using the same subset of 16S rRNA gene amplicon data from fecal mouse samples published by the [Schloss lab](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3753973/pdf/zam5112.pdf) (kozich et al. 2013).
 
 License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 
 <br>
 <br>
+<br>
 
+### Acknowledgements
+
+<center><figure>
+  <img src="figs/biodata_elixir.png" alt="dada2" width="200" class="center">
+  <img src="figs/logoIGC2014.png" alt="dada2" width="300" class="center">
+</figure></center>
+
+
+<br>
+<br>
+<br>
 
 ### References
 
@@ -1329,9 +1355,13 @@ Metzker, Michael L. 2010. “Sequencing Technologies—the Next Generation.” N
 
 Quast, Christian, Elmar Pruesse, Pelin Yilmaz, Jan Gerken, Timmy Schweer, Pablo Yarza, Jörg Peplies, and Frank Oliver Glöckner. 2012. “The Silva Ribosomal Rna Gene Database Project: Improved Data Processing and Web-Based Tools.” Nucleic Acids Research 41 (D1). Oxford University Press: D590–D596.
 
+R Core Team. 2019. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. https://www.R-project.org/.
+
 Rosen, Michael J, Benjamin J Callahan, Daniel S Fisher, and Susan P Holmes. 2012. “Denoising Pcr-Amplified Metagenome Data.” BMC Bioinformatics 13 (1). BioMed Central: 283.
 
 Wang, Qiong, George M Garrity, James M Tiedje, and James R Cole. 2007. “Naive Bayesian Classifier for Rapid Assignment of rRNA Sequences into the New Bacterial Taxonomy.” Appl. Environ. Microbiol. 73 (16). Am Soc Microbiol: 5261–7.
+
+
 
 
 

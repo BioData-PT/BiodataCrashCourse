@@ -1,6 +1,9 @@
 ---
 title: "practical-Biodata.ptCrashCourses.Rmd"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -297,7 +300,7 @@ barplot(summaryTblSeqTrans, main = "Absolute no. of sequences kept through the p
 
 summaryTblSeqPerc <- apply(X = summaryTblSeq, MARGIN = 2, function(x) x / summaryTblSeq[,1] * 100) # get the correspondent percentage table
 summaryTblSeqPercTrans <- t(summaryTblSeqPerc) # transpose
-barplot(summaryTblSeqPercTrans, main = "Percenatge of sequences kept through the pipeline", ylab = "Percentage of sequences (%)", xlab = "Samples", col = c("gray", "#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"), legend = rownames(summaryTblSeqPercTrans), beside = TRUE) # plot it 
+barplot(summaryTblSeqPercTrans, main = "Percentage of sequences kept through the pipeline", ylab = "Percentage of sequences (%)", xlab = "Samples", col = c("gray", "#EFF3FF", "#BDD7E7", "#6BAED6", "#3182BD", "#08519C"), legend = rownames(summaryTblSeqPercTrans), beside = TRUE) # plot it 
 
 
 ```
@@ -382,9 +385,6 @@ write.csv(x = metadata, file = "./output/metadata.csv", quote = FALSE, row.names
 
 ```
 
-<br>
-
-
 
 ### (9) Evaluate accuracy and contamination (with the *mock community*)
 
@@ -397,6 +397,18 @@ mockAsvTbl <- asvTbl["Mock",] # retrieve the sample "Mock" from the ASV table
 mockAsvTbl <- sort(x = mockAsvTbl[mockAsvTbl>0], decreasing = TRUE) # retrieve only ASVs higher than 0
 refMockSeq <- getSequences(file.path(fastqPath, "HMP_MOCK.v35.fasta")) # import reference mock sequences from "HMP_MOCK.v35.fasta"
 compareRefAsvMock <- sum(sapply(names(mockAsvTbl), function(x) any(grepl(x, refMockSeq)))) # compare our ASV mock sequences wiht the reference
+
+```
+
+
+### Convert the ASV table text file into a biom (Biological Observation Matrix) file
+
+```{r ASV table to biom format}
+
+## Convert ASV table with taxonomy in tab-delimited format into biom format  
+
+source("./scripts/biodataPtCrashCourse.R") # import R script with built-in functions
+convertTab2Biom(inFile = "./output/asvTaxTbl.txt", outFile = "./output/asvTable.biom")
 
 ```
 
