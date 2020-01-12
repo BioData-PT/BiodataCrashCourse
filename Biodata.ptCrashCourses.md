@@ -1341,6 +1341,8 @@ License: [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ### References
 
+
+
 Callahan, Benjamin J, Paul J McMurdie, Michael J Rosen, Andrew W Han, Amy Jo A Johnson, and Susan P Holmes. 2016. “DADA2: High-Resolution Sample Inference from Illumina Amplicon Data.” Nature Methods 13 (7). Nature Publishing Group: 581.
 
 Glassman, Sydney I, and Jennifer BH Martiny. 2018. “Broadscale Ecological Patterns Are Robust to Use of Exact Sequence Variants Versus Operational Taxonomic Units.” MSphere 3 (4). Am Soc Microbiol: e00148–18.
@@ -1348,6 +1350,8 @@ Glassman, Sydney I, and Jennifer BH Martiny. 2018. “Broadscale Ecological Patt
 Kozich, James J, Sarah L Westcott, Nielson T Baxter, Sarah K Highlander, and Patrick D Schloss. 2013. “Development of a Dual-Index Sequencing Strategy and Curation Pipeline for Analyzing Amplicon Sequence Data on the Miseq Illumina Sequencing Platform.” Appl. Environ. Microbiol. 79 (17). Am Soc Microbiol: 5112–20.
 
 Leipzig, Jeremy. 2017. “A Review of Bioinformatic Pipeline Frameworks.” Briefings in Bioinformatics 18 (3). Oxford University Press: 530–36.
+
+Martin, Marcel. 2011. “Cutadapt Removes Adapter Sequences from High-Throughput Sequencing Reads.” EMBnet. Journal 17 (1): 10–12.
 
 McDonald, Daniel, Jose C Clemente, Justin Kuczynski, Jai Ram Rideout, Jesse Stombaugh, Doug Wendel, Andreas Wilke, et al. 2012. “The Biological Observation Matrix (Biom) Format or: How I Learned to Stop Worrying and Love the Ome-Ome.” GigaScience 1 (1). BioMed Central: 7.
 
